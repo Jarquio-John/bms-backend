@@ -7,77 +7,73 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    // Display a listing of the books
     public function index()
     {
-        // Retrieve all books
         $books = Book::all();
         return response()->json($books);
     }
 
-    // Store a newly created book in storage
     public function store(Request $request)
     {
-        // Validate request data
         $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'published_date' => 'required|date',
+            'published_year' => 'required|integer|digits:4', 
+            'genre' => 'required|string|max:100',
+            'description' => 'required|string|max:1000',
         ]);
 
-        // Create new book
         $book = Book::create([
             'title' => $request->title,
             'author' => $request->author,
-            'published_date' => $request->published_date,
+            'published_year' => $request->published_year,
+            'genre' => $request->genre,
+            'description' => $request->description,
         ]);
 
-        return response()->json($book, 201); // 201 Created
+        return response()->json($book, 201);
     }
 
-    // Display the specified book
-    public function show($id)
+    public function show(string $id)
     {
         $book = Book::find($id);
 
         if ($book) {
             return response()->json($book);
-        } else {
-            return response()->json(['message' => 'Book not found'], 404);
         }
+        
+        return response()->json(['message' => 'Book not found'], 404);
     }
 
-    // Update the specified book in storage
     public function update(Request $request, $id)
     {
-        // Validate request data
         $request->validate([
             'title' => 'sometimes|string|max:255',
             'author' => 'sometimes|string|max:255',
-            'published_date' => 'sometimes|date',
+            'published_year' => 'sometimes|integer|digits:4',
+            'genre' => 'sometimes|string|max:100',
+            'description' => 'sometimes|string|max:1000',
         ]);
 
         $book = Book::find($id);
 
         if ($book) {
-            // Update book details
             $book->update($request->all());
             return response()->json($book);
-        } else {
-            return response()->json(['message' => 'Book not found'], 404);
         }
+        
+        return response()->json(['message' => 'Book not found'], 404);
     }
 
-    // Remove the specified book from storage
-    public function destroy($id)
+    public function destroy(string $id)
     {
         $book = Book::find($id);
 
         if ($book) {
             $book->delete();
             return response()->json(['message' => 'Book deleted successfully']);
-        } else {
-            return response()->json(['message' => 'Book not found'], 404);
         }
+        
+        return response()->json(['message' => 'Book not found'], 404);
     }
 }

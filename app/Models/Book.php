@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
+    public $timestamps = false;
+
     use HasFactory;
 
-    // Specify the fillable fields
+    protected $table = 'books';
+
     protected $fillable = [
         'title',
         'author',
